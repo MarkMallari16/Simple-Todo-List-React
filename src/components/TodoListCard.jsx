@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import moment from 'moment'
 function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, completed }) {
 
-    const formattedDate = moment().format('ddd, MMM DD  YYYY' ) ;
+    const formattedDate = moment().format('ddd, MMM DD  YYYY');
     const [editedText, setEditedText] = useState(text);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -14,8 +14,8 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
     }
 
     return (
-        <div className={`card w-96 bg-base-200 ring-1 ring-inset ${completed ? 'ring-green-500' : 'ring-gray-700'} mt-5`}>
-            <div className="card-body text-start">
+        <div className={`card w-96  bg-base-200 ring-1 ring-inset ${completed ? 'ring-green-500 ' : 'ring-gray-700'} mt-5`}>
+            <div className="card-body text-start ">
                 {isEditing ? (
                     <input
                         type="text"
@@ -24,7 +24,7 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
                         className="input input-bordered"
                     />
                 ) : (
-                    <h1 className={`text-4xl font-bold  ${completed && 'line-through'}`}>{text}</h1>
+                    <h1 className={`text-4xl font-bold text-wrap  ${completed && 'line-through w-full'} break-words`}>{text}</h1>
                 )}
                 <div className='flex items-center gap-2 text-gray-300'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
@@ -32,7 +32,11 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
                     </svg>
 
                     <span>{formattedDate}</span>
+                    {completed &&
+                        <div className='flex gap-2 text-green-500 font-medium'>
+                            <span> Completed</span>
 
+                        </div>}
                 </div>
             </div>
             <div className="card-actions justify-end">
