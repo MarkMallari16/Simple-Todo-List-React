@@ -37,12 +37,15 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
                         </svg>
 
                         <div >{formattedDate}</div>
+
+
                     </div>
                     {completed &&
                         <div className='flex gap-2 text-green-500 font-medium'>
                             <span> Completed</span>
 
-                        </div>}
+                        </div>
+                    }
                 </div>
             </div>
             <div className="card-actions justify-end">
