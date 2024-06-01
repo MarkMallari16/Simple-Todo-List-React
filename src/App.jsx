@@ -3,18 +3,49 @@ import './App.css'
 import TodoListCard from './components/TodoListCard'
 
 function App() {
-  const [filter, setFilter] = useState('all');
-  const [todos, setTodos] = useState(() => {
-    const storedTodo = localStorage.getItem('todos');
+  const getInitialTodos = () => {
+    try {
+      const storedTodo = localStorage.getItem('todos');
+      return storedTodo ? JSON.parse(storedTodo) : [];
+    } catch (error) {
+      return [];
+    }
+  }
 
-    return storedTodo ? JSON.parse(storedTodo) : [];
-  });
+  const getInitialFilter = () => {
+    const storedFilter = localStorage.getItem('filteredTodos');
+    try {
+      return storedFilter ? JSON.parse(storedFilter) : 'all';
+    } catch (error) {
+
+      return 'all';
+    }
+  }
+  const getInitialOrder = () => {
+    try {
+      const sortTodos = localStorage.getItem('sortTodos');
+      return sortTodos ? JSON.parse(sortTodos) : 'ascending';
+    } catch (error) {
+      return 'ascending'
+    }
+  }
+
+  const [todos, setTodos] = useState(getInitialTodos());
+  const [filter, setFilter] = useState(getInitialFilter());
+  const [sortOrder, setSortOrder] = useState(getInitialOrder());
+
   const [inputValue, setInputValue] = useState('');
-  const [errorMessage, setErrorMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('');
+
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos))
-  }, [todos]);
+    localStorage.setItem('filteredTodos', JSON.stringify(filter));
+    localStorage.setItem('sortTodos', JSON.stringify(sortOrder));
 
+  }, [todos, sortOrder, filter]);
+
+
+  //handle input change
   const handleInputChange = (event) => {
     const value = event.target.value;
 
@@ -28,6 +59,7 @@ function App() {
       setErrorMessage('');
     }
   }
+  //handle add task
   const handleAddTask = () => {
 
     const trimmedInputValue = inputValue.trim();
@@ -54,11 +86,13 @@ function App() {
     setInputValue('');
     setErrorMessage('');
   }
+  //This will handle key when user press 'Enter'
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handleAddTask();
     }
   }
+  //This will handle edit task
   const handleEditTask = (id, newText) => {
     const updatedTodos = todos.map(todo => {
       if (todo.id === id) {
@@ -70,12 +104,13 @@ function App() {
 
     setTodos(updatedTodos);
   }
+  //This will handle delete task
   const handleDeleteTask = (id) => {
     const updatedTodos = todos.filter((todo) => todo.id !== id);
 
     setTodos(updatedTodos);
   }
-
+  //This will handle finish task
   const handleFinishTask = (id) => {
     const updatedTodos = todos.map(todo => {
       if (todo.id === id) {
@@ -85,20 +120,23 @@ function App() {
     })
     setTodos(updatedTodos);
   }
+  //Getting the number of task using todos.length
+  const numberOfTask = todos.filter(todo => !todo.completed).length;
 
-  const numberOfTask = todos.length;
-
-  const filterTasks = (task) => {
-    if (filter === 'completed') {
-      return task.completed;
-    } else if (filter === 'active') {
-      return !task.completed;
-    }
+  //This will filtered the task
+  const filterTasks = (todo) => {
+    if (filter === 'all') return true;
+    if (filter === 'completed') return todo.completed;
+    if (filter === 'active') return !todo.completed;
     return true;
   }
+
+  //This will sort by date 
+  const sortedTodos = todos.filter(filterTasks).sort((a, b) => sortOrder === 'ascending' ? new Date(a.createdAt) - new Date(b.createdAt) : new Date(b.createdAt) - new Date(a.createdAt));
+
   return (
     <>
-      <div className='h-screen w-full'>
+      <div className='h-screen w-full md:w-auto'>
         <div className='flex  justify-center gap-2 '>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-10">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
@@ -125,29 +163,47 @@ function App() {
         </div>
 
         <div className='flex items-center justify-between  mt-10 font-medium text-2xl'>
-          <div>
+          <div className='text-xl lg:text-2xl'>
             <span >You have {numberOfTask} task(s)</span>
           </div>
-          <div>
-            <details className="dropdown ">
-              <summary className="m-1 btn">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
-                </svg>
+          <div className='flex'>
+            <div>
+              <div className="dropdown  dropdown-hover">
+                <div role='button' className="m-1 btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5" />
+                  </svg>
 
-                Filter by</summary>
-              <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-30">
-                <li><a onClick={() => setFilter('all')} className={filter === 'all' ? 'bg-base-300' : ''}>All</a></li>
-                <li><a onClick={() => setFilter('active')} className={filter === 'active' ? 'bg-base-300' : ''}>Active</a></li>
-                <li><a onClick={() => setFilter('completed')} className={filter === 'completed' ? 'bg-base-300' : ''}>Completed</a></li>
-              </ul>
-            </details>
 
+                  Sort by</div>
+                <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-30">
+                  <li><a onClick={() => setSortOrder('ascending')} className={sortOrder === 'ascending' ? 'bg-base-300' : ''}>Ascending</a></li>
+                  <li><a onClick={() => setSortOrder('descending')} className={sortOrder === 'descending' ? 'bg-base-300' : ''}>Descending</a></li>
+
+                </ul>
+              </div>
+            </div>
+            <div>
+              <div className="dropdown  dropdown-hover">
+                <div tabIndex={0} role='button' className="m-1 btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                  </svg>
+
+                  Filter by</div>
+                <ul tabIndex={0} className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-30">
+                  <li><a onClick={() => setFilter('all')} className={filter === 'all' ? 'bg-base-300' : ''}>All</a></li>
+                  <li><a onClick={() => setFilter('active')} className={filter === 'active' ? 'bg-base-300' : ''}>Active</a></li>
+                  <li><a onClick={() => setFilter('completed')} className={filter === 'completed' ? 'bg-base-300' : ''}>Completed</a></li>
+                </ul>
+              </div>
+
+            </div>
           </div>
         </div>
         {todos.length > 0 ? (
-          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 items-center'>
-            {todos.filter(filterTasks).map((todo) => (
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4  place-items-center'>
+            {sortedTodos.map((todo) => (
               <TodoListCard id={todo.id} key={todo.id} text={todo.text} createdAt={todo.createdAt} onDelete={() => handleDeleteTask(todo.id)} onEdit={(newText) => handleEditTask(todo.id, newText)}
                 onFinish={() => handleFinishTask(todo.id)} completed={todo.completed} />
             ))}

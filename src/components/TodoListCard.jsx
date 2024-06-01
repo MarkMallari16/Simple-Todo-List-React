@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import moment from 'moment'
+import React, { useState } from 'react';
+import moment from 'moment';
+
 function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, completed }) {
 
-    const formattedDate = moment().format('ddd, MMM DD  YYYY');
+    const formattedDate = moment(createdAt).format('ddd, MMM DD  YYYY');
     const [editedText, setEditedText] = useState(text);
     const [isEditing, setIsEditing] = useState(false);
 
