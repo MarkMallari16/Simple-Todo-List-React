@@ -3,6 +3,7 @@ import './App.css'
 import TodoListCard from './components/TodoListCard'
 
 function App() {
+  const [filter, setFilter] = useState('all');
   const [todos, setTodos] = useState(() => {
     const storedTodo = localStorage.getItem('todos');
 
@@ -84,7 +85,17 @@ function App() {
     })
     setTodos(updatedTodos);
   }
+
   const numberOfTask = todos.length;
+
+  const filterTasks = (task) => {
+    if (filter === 'completed') {
+      return task.completed;
+    } else if (filter === 'active') {
+      return !task.completed;
+    }
+    return true;
+  }
   return (
     <>
       <div className='h-screen w-full'>
@@ -110,15 +121,33 @@ function App() {
                 <span className="text-red-500">{errorMessage}</span>
               </div>
             )}
+          </div>
+        </div>
+
+        <div className='flex items-center justify-between  mt-10 font-medium text-2xl'>
+          <div>
+            <span >You have {numberOfTask} task(s)</span>
+          </div>
+          <div>
+            <details className="dropdown ">
+              <summary className="m-1 btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                </svg>
+
+                Filter by</summary>
+              <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-30">
+                <li><a onClick={() => setFilter('all')} className={filter === 'all' ? 'bg-base-300' : ''}>All</a></li>
+                <li><a onClick={() => setFilter('active')} className={filter === 'active' ? 'bg-base-300' : ''}>Active</a></li>
+                <li><a onClick={() => setFilter('completed')} className={filter === 'completed' ? 'bg-base-300' : ''}>Completed</a></li>
+              </ul>
+            </details>
 
           </div>
         </div>
-        <div className='flex mt-10 font-medium text-2xl'>
-          <span >You have {numberOfTask} task(s)</span>
-        </div>
         {todos.length > 0 ? (
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 items-center'>
-            {todos.map((todo) => (
+            {todos.filter(filterTasks).map((todo) => (
               <TodoListCard id={todo.id} key={todo.id} text={todo.text} createdAt={todo.createdAt} onDelete={() => handleDeleteTask(todo.id)} onEdit={(newText) => handleEditTask(todo.id, newText)}
                 onFinish={() => handleFinishTask(todo.id)} completed={todo.completed} />
             ))}
@@ -133,7 +162,6 @@ function App() {
 
               </span>
               <h1 className='text-center flex justify-center items-center '>No tasks today!</h1>
-
             </div>
 
           </div>
