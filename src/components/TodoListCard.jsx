@@ -27,8 +27,14 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
 
         return () => clearTimeout(timer);
     }, [createdAt])
+
+    const handleEditEnterButton = (e) => {
+        if (e.key === 'Enter') {
+            handleSaveEdit();
+        }
+    }
     return (
-        <div className={`card w-96  bg-base-200 ring-1 ring-inset ${completed ? 'ring-green-500 ' : 'ring-gray-700'} mt-5`}>
+        <div className={`card w-full bg-base-200 ring-1 ring-inset ${completed ? 'ring-green-500 ' : 'ring-gray-700'}`}>
             <div className="card-body text-start ">
                 {isEditing ? (
                     <input
@@ -36,6 +42,7 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
                         value={editedText}
                         onChange={(e) => setEditedText(e.target.value)}
                         className="input input-bordered"
+                        onKeyDown={handleEditEnterButton}
                     />
                 ) : (
                     <h1 className={`text-4xl font-bold text-wrap  ${completed && 'text-slate-300 line-through w-full'} break-words`}>{text}</h1>
@@ -62,7 +69,7 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
                     }
                 </div>
             </div>
-            <div className="card-actions justify-end">
+            <div className="card-actions justify-end me-5 mb-5">
                 {isEditing ? (
                     <>
 
@@ -88,7 +95,6 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                     </svg>
-
                                 </button>
 
                             </>
