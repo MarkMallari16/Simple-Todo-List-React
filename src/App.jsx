@@ -166,13 +166,13 @@ function App() {
           </div>
         </div>
 
-        <div className='flex items-center justify-between  mt-10 font-medium'>
+        <div className='flex items-center justify-between mt-10 font-medium'>
           <div className='text-xl lg:text-2xl'>
             <span >You have {numberOfTask} task(s)</span>
           </div>
           <div className='flex'>
             <div>
-              <div className="dropdown  dropdown-hover">
+              <div className="dropdown dropdown-hover">
                 <div role='button' className="m-1 btn">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 13.5V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 0 1 0 3m0-3a1.5 1.5 0 0 0 0 3m0 9.75V10.5" />
@@ -181,12 +181,11 @@ function App() {
                 <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-30">
                   <li><a onClick={() => setSortOrder('ascending')} className={sortOrder === 'ascending' ? 'bg-base-300' : ''}>Ascending</a></li>
                   <li><a onClick={() => setSortOrder('descending')} className={sortOrder === 'descending' ? 'bg-base-300' : ''}>Descending</a></li>
-
                 </ul>
               </div>
             </div>
             <div>
-              <div className="dropdown  dropdown-hover">
+              <div className="dropdown dropdown-hover">
                 <div role='button' className="m-1 btn">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
@@ -206,7 +205,7 @@ function App() {
         {todos.length > 0 ? (
           <div className='mt-5 '>
             <ResponsiveMasonry
-              columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3}} >
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }} >
               <Masonry columnsCount={3} gutter='20px'>
                 {sortedTodos.map((todo) => (
                   <TodoListCard id={todo.id} key={todo.id} text={todo.text} createdAt={todo.createdAt} onDelete={() => handleDeleteTask(todo.id)} onEdit={(newText) => handleEditTask(todo.id, newText)}
