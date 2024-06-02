@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import TodoListCard from './components/TodoListCard'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import Navbar from './components/NavBar';
 
 
 function App() {
@@ -140,7 +141,9 @@ function App() {
 
   return (
     <>
+     
       <div className='w-full mx-auto max-w-7xl p-4'>
+      <Navbar />
         <div className='mb-4'>
           <div className='flex  justify-center gap-2 '>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-10 hidden lg:block">
