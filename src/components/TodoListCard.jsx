@@ -34,7 +34,7 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
         }
     }
     return (
-        <div className={`card w-full bg-base-200 ring-1 ring-inset  ${completed ? 'ring-green-500 ' : 'ring-gray-700'} break-inside-avoid`}>
+        <div className={`card w-full bg-base-200 shadow-md ring-1 ring-inset   ${completed ? 'ring-green-500 ' : 'ring-gray-700'} break-inside-avoid `}>
             <div className="card-body text-start">
                 {isEditing ? (
                     <input

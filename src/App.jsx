@@ -151,7 +151,7 @@ function App() {
             </div>
 
           </div>
-          <div className='text-center text-slate-300'>created by Mark Mallari</div>
+          <div className='text-center text-slate-300 font-mono text-lg'>created by Mark Mallari</div>
         </div>
         <div>
           <div className='flex items-center justify-center gap-3 mt-2 mb-2'>
@@ -211,7 +211,7 @@ function App() {
           </div>
         </div>
         {todos.length > 0 ? (
-          <div className='mt-5 '>
+          <div className='mt-5'>
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }} >
               <Masonry columnsCount={3} gutter='20px'>
