@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import TodoListCard from './components/TodoListCard'
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
 
 function App() {
@@ -83,7 +84,7 @@ function App() {
     }
 
     setTodos([...todos, newTask]);
-    
+
     setInputValue('');
     setErrorMessage('');
     setFilter('all');
@@ -204,12 +205,16 @@ function App() {
         </div>
         {todos.length > 0 ? (
           <div className='mt-5 '>
-            <div className='grid grid-cols-1 sm:grid-cols-2 md:w-auto lg:grid-cols-3 gap-5  place-items-center '>
-              {sortedTodos.map((todo) => (
-                <TodoListCard id={todo.id} key={todo.id} text={todo.text} createdAt={todo.createdAt} onDelete={() => handleDeleteTask(todo.id)} onEdit={(newText) => handleEditTask(todo.id, newText)}
-                  onFinish={() => handleFinishTask(todo.id)} completed={todo.completed} />
-              ))}
-            </div>
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3}} >
+              <Masonry columnsCount={3} gutter='20px'>
+                {sortedTodos.map((todo) => (
+                  <TodoListCard id={todo.id} key={todo.id} text={todo.text} createdAt={todo.createdAt} onDelete={() => handleDeleteTask(todo.id)} onEdit={(newText) => handleEditTask(todo.id, newText)}
+                    onFinish={() => handleFinishTask(todo.id)} completed={todo.completed} />
+                ))}
+              </Masonry>
+            </ResponsiveMasonry>
+
           </div>
         ) : (
           <div className='flex justify-center w-full'>

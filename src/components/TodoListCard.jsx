@@ -34,8 +34,8 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
         }
     }
     return (
-        <div className={`card w-full bg-base-200 ring-1 ring-inset ${completed ? 'ring-green-500 ' : 'ring-gray-700'}`}>
-            <div className="card-body text-start ">
+        <div className={`card w-full bg-base-200 ring-1 ring-inset  ${completed ? 'ring-green-500 ' : 'ring-gray-700'} break-inside-avoid`}>
+            <div className="card-body text-start">
                 {isEditing ? (
                     <input
                         type="text"
@@ -72,7 +72,6 @@ function TodoListCard({ id, text, createdAt, onDelete, onEdit, onFinish, complet
             <div className="card-actions justify-end me-5 mb-5">
                 {isEditing ? (
                     <>
-
                         <button className="btn btn-error" onClick={() => setIsEditing(false)}>Cancel</button>
                         <button className="btn btn-success" onClick={handleSaveEdit}>Save</button>
                     </>
