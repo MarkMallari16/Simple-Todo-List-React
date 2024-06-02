@@ -130,7 +130,7 @@ function App() {
     if (filter === 'active') return !todo.completed;
     return true;
   }
-
+  
   //This will sort by date 
   const sortedTodos = todos.filter(filterTasks).sort((a, b) => sortOrder === 'ascending' ? new Date(a.createdAt) - new Date(b.createdAt) : new Date(b.createdAt) - new Date(a.createdAt));
 
@@ -200,7 +200,7 @@ function App() {
           </div>
         </div>
         {todos.length > 0 ? (
-          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4  place-items-center'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4  place-items-center break-inside-avoid'>
             {sortedTodos.map((todo) => (
               <TodoListCard id={todo.id} key={todo.id} text={todo.text} createdAt={todo.createdAt} onDelete={() => handleDeleteTask(todo.id)} onEdit={(newText) => handleEditTask(todo.id, newText)}
                 onFinish={() => handleFinishTask(todo.id)} completed={todo.completed} />
