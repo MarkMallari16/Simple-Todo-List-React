@@ -101,7 +101,7 @@ function App() {
   const handleEditTask = (id, newText) => {
     const updatedTodos = todos.map(todo => {
       if (todo.id === id) {
-        return { ...todo, text: newText };
+        return { ...todo, text: newText, createdAt: new Date().toISOString() };
       }
       return todo;
     });
@@ -141,18 +141,17 @@ function App() {
 
   return (
     <>
-
       <div className='w-full mx-auto max-w-7xl p-4'>
         <Navbar />
         <div className='mb-4'>
           <div className='flex  justify-center gap-2 '>
-           
+
             <div className='text-3xl lg:text-4xl font-bold font-mono'>
               Simple Todo-List
             </div>
 
           </div>
-          <div className='text-center text-slate-300 font-mono text-lg'>created by Mark Mallari</div>
+          <div className='text-center dark:text-slate-400 font-mono text-lg'>created by Mark Mallari</div>
         </div>
         <div>
           <div className='flex items-center justify-center gap-3 mt-2 mb-2'>
