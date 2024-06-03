@@ -28,7 +28,7 @@ function App() {
   const getInitialOrder = () => {
     try {
       const sortTodos = localStorage.getItem('sortTodos');
-      return sortTodos ? JSON.parse(sortTodos) : 'ascending';
+      return sortTodos ? JSON.parse(sortTodos) : 'descending';
     } catch (error) {
       return 'ascending'
     }
