@@ -3,181 +3,18 @@ import './App.css'
 import TodoListCard from './components/TodoListCard'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import Navbar from './components/NavBar';
+import TodoInput from './components/TodoInput';
+import useTodos from './hooks/useTodos';
 
 
 function App() {
-  const getInitialTodos = () => {
-    try {
-      const storedTodo = localStorage.getItem('todos');
-
-      return storedTodo ? JSON.parse(storedTodo) : [];
-
-    } catch (error) {
-      return [];
-    }
-  }
-
-  const getInitialFilter = () => {
-    const storedFilter = localStorage.getItem('filteredTodos');
-    try {
-      return storedFilter ? JSON.parse(storedFilter) : 'all';
-    } catch (error) {
-      return 'all';
-    }
-  }
-  const getInitialOrder = () => {
-    try {
-      const sortTodos = localStorage.getItem('sortTodos');
-      return sortTodos ? JSON.parse(sortTodos) : 'descending';
-    } catch (error) {
-      return 'ascending'
-    }
-  }
-
-  const [todos, setTodos] = useState(getInitialTodos());
-  const [filter, setFilter] = useState(getInitialFilter());
-  const [sortOrder, setSortOrder] = useState(getInitialOrder());
-
-  const [inputValue, setInputValue] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos))
-    localStorage.setItem('filteredTodos', JSON.stringify(filter));
-    localStorage.setItem('sortTodos', JSON.stringify(sortOrder));
-
-  }, [todos, sortOrder, filter]);
-
-
-  //handle input change
-  const handleInputChange = (event) => {
-    const value = event.target.value;
-
-    setInputValue(value);
-
-    if (value.trim() === '') {
-      setErrorMessage('You must input a task description!');
-    } else if (value.trim().length < 3) {
-      setErrorMessage('Task description must be at least 3 characters long.');
-    } else {
-      setErrorMessage('');
-    }
-  }
-  //handle add task
-  const handleAddTask = () => {
-    const trimmedInputValue = inputValue.trim();
-
-    if (trimmedInputValue.length === 0) {
-      setErrorMessage('You must input a task description!');
-      return;
-    }
-
-    if (trimmedInputValue.length < 3) {
-      setErrorMessage('Task description must be at least 3 characters long.');
-      return;
-    }
-
-    const newTask = {
-      id: Math.floor(Math.random() * 1000000),
-      text: inputValue,
-      createdAt: new Date().toISOString(),
-      completed: false
-    }
-
-    setTodos([...todos, newTask]);
-
-    setInputValue('');
-    setErrorMessage('');
-    setFilter('all');
-  }
-  //This will handle key when user press 'Enter'
-  const handleEnterKey = (e) => {
-    if (e.key === 'Enter') {
-      handleAddTask();
-      setFilter('all');
-    }
-  }
-  //This will handle edit task
-  const handleEditTask = (id, newText) => {
-    const updatedTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return { ...todo, text: newText, createdAt: new Date().toISOString() };
-      }
-      return todo;
-    });
-
-
-    setTodos(updatedTodos);
-  }
-  //This will handle delete task
-  const handleDeleteTask = (id) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-
-    setTodos(updatedTodos);
-  }
-  //This will handle finish task
-  const handleFinishTask = (id) => {
-    const updatedTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return { ...todo, completed: true }
-      }
-      return todo;
-    })
-    setTodos(updatedTodos);
-  }
-  //Getting the number of task using todos.length
-  const numberOfTask = todos.filter(todo => !todo.completed).length;
-
-  //This will filtered the task
-  const filterTasks = (todo) => {
-    if (filter === 'all') return true;
-    if (filter === 'completed') return todo.completed;
-    if (filter === 'active') return !todo.completed;
-    return true;
-  }
-
-  //This will sort by date 
-  const sortedTodos = todos.filter(filterTasks).sort((a, b) => sortOrder === 'ascending' ? new Date(a.createdAt) - new Date(b.createdAt) : new Date(b.createdAt) - new Date(a.createdAt));
+  const { todos, sortedTodos, numberOfTask, sortOrder, filter, errorMessage, handleAddTask, handleDeleteTask, handleEditTask, handleEnterKey, handleInputChange, inputValue, } = useTodos();
 
   return (
     <>
       <div className='w-full mx-auto max-w-7xl p-4'>
         <Navbar />
-        <div className='mb-4'>
-          <div className='flex  justify-center gap-2 '>
-
-            <div className='text-3xl lg:text-4xl font-bold font-mono'>
-              Simple Todo-List
-            </div>
-
-          </div>
-          <div className='text-center dark:text-slate-400 font-mono text-lg'>created by Mark Mallari</div>
-        </div>
-        <div>
-          <div className='flex items-center justify-center gap-3 mt-2 mb-2'>
-            <input type="text" placeholder="Enter your Task" className={`input input-bordered w-full ${errorMessage ? 'border-red-500 focus:outline-red-500' : ''}`} value={inputValue} onChange={handleInputChange} onKeyDown={handleEnterKey} />
-
-            <button className='btn btn-accent flex items-center' onClick={handleAddTask}>
-              <span className='hidden lg:block'>Add Task</span>
-
-              <span className='text-2xl block lg:hidden'>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-                  <path fillRule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z" clipRule="evenodd" />
-                </svg>
-
-
-              </span>
-            </button>
-
-          </div>
-          <div>
-            {errorMessage && (
-              <div className="mx-auto mb-4 text-start">
-                <span className="text-red-500">{errorMessage}</span>
-              </div>
-            )}
-          </div>
-        </div>
+        <TodoInput handleAddTask={handleAddTask} inputValue={inputValue} handleInputChange={handleInputChange} errorMessage={errorMessage} handleEnterKey={handleEnterKey} />
 
         <div className='flex items-center justify-between mt-8 font-medium'>
           <div className='text-xl lg:text-2xl'>
@@ -231,7 +68,7 @@ function App() {
           </div>
         ) : (
           <div className='flex justify-center w-full'>
-            <div className='bg-base-300 rounded-lg flex flex-col justify-center items-center py-5 w-full  mt-2 text-gray-300 gap-1'>
+            <div className='bg-base-300 rounded-lg flex flex-col justify-center items-center py-5 w-full  mt-2  gap-1'>
               <span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-10">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184" />
