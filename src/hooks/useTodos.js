@@ -58,10 +58,10 @@ function useTodos() {
       setErrorMessage('');
     }
   }
-  //handle add task
-  const handleAddTask = () => {
+  const validateInput = () => {
     const trimmedInputValue = inputValue.trim();
 
+    
     if (trimmedInputValue.length === 0) {
       setErrorMessage('You must input a task description!');
       return;
@@ -71,6 +71,12 @@ function useTodos() {
       setErrorMessage('Task description must be at least 3 characters long.');
       return;
     }
+
+  }
+  //handle add task
+  const handleAddTask = () => {
+
+    validateInput()
 
     const newTask = {
       id: Math.floor(Math.random() * 1000000),
@@ -137,15 +143,19 @@ function useTodos() {
   return {
     todos,
     filter,
+    numberOfTask,
     sortOrder,
+    sortedTodos,
+    errorMessage,
+    setFilter,
+    setSortOrder,
+    handleEnterKey,
     handleAddTask,
     handleEditTask,
     handleDeleteTask,
     handleFinishTask,
-    sortedTodos,
-    setFilter,
-    setSortOrder,
-    numberOfTask,
+    handleInputChange,
+
   };
 }
 
